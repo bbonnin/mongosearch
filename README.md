@@ -35,7 +35,7 @@ Important:
 ```
 
 Now, you have new methods for a collection:
-* `insertAndIndex` : to insert a document in MongoDB and index it in Elasticsearch
+* `saveAndIndex` : to insert a document in MongoDB and index it in Elasticsearch
   * Arguments :
     * doc : document to insert
     * fields : fields to index in Elasticsearch (to avoid indexing the whole document)
@@ -49,7 +49,7 @@ Now, you have new methods for a collection:
 ## Examples
 * Add new documents (only 2 fields are indexed in ELS):
 ```
-> db.actors.insertAndIndex({first_name: 'Will', last_name: 'Smith', movies: [...]}, ['first_name', 'last_name'])
+> db.actors.saveAndIndex({first_name: 'Will', last_name: 'Smith', movies: ['Independance Day']}, ['first_name', 'last_name'])
 
 {
   "mongo": {
