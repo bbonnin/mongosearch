@@ -19,12 +19,11 @@ The goal of this extension is to provide an easy way (i.e. using one command) to
 Important:
 * The script uses `curl` for requesting Elasticsearch: this tool must be in your path or you can change the calls to `runProgram` 
 * The same id will be used in MongoDB and Elastisearch
-  * it will be stored in a field named `_search_id` in Elasticsearch
+  * it will be stored in a field named `_mongo_id` in Elasticsearch
 * By default (Elasticsearch / MongoDB):
   * index name = database name
   * document type name = collection name
   * elasticsearch host = mongod host
-  * _id = stringified _id
 
 ## How to use
 * Download `mongosearch.js`
@@ -35,21 +34,21 @@ Important:
 ```
 
 Now, you have new methods for a collection:
-* `saveAndIndex` : to insert a document in MongoDB and index it in Elasticsearch
+* `saveAndIndex` : insert a document in MongoDB and index it in Elasticsearch
   * Arguments :
     * doc : document to insert
-    * fields : fields to index in Elasticsearch (to avoid indexing the whole document)
+    * elsDocFields : fields to index in Elasticsearch (to avoid indexing the whole document)
   * Return : result of the action
-* `search` : to search documents. The search query is sent to Elasticsearch and the result is used to get the documents in MongoDB (using the _id)
+* `search` : search documents. The search query is sent to Elasticsearch and the result is used to get the documents in MongoDB (using the `_mongo_id`)
   * Arguments :
     * query : Elasticsearch search query (see Elasticsearch documentation)
-  * Return : documents  
+  * Return : documents
 * `setElsEndpoint` : override the default URL to use for the Elasticsearch queries
 
 ## Examples
 * Add new documents (only 2 fields are indexed in ELS):
 ```
-> db.actors.saveAndIndex({first_name: 'Will', last_name: 'Smith', movies: ['Independance Day']}, ['first_name', 'last_name'])
+> db.actors.saveAndIndex({first_name: 'Will', last_name: 'Smith', movies: ['Independance Day'], _id:1}, ['first_name', 'last_name'])
 
 {
   "mongo": {
