@@ -5,11 +5,15 @@ MongoDB shell extension to send elasticsearch queries and use the result to get 
 The goal of this extension is to provide an easy way (i.e. using one command) to :
 * insert documents in MongoDB and to index these documents (only the fields you will use for your search queries) in Elasticsearch
 
-![save and index](/docs/insert.png)
+<center>
+  <img alt="save and index" src="/docs/insert.png" width="636" height="180"/>
+</center>
 
 * search in Elasticsearch and return the associated document stored in MongoDB
 
-![search](/docs/search.png)
+<center>
+  <img alt="search" src="/docs/search.png" width="648" height="193"/>
+</center>
 
 
 Important:
