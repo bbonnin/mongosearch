@@ -66,11 +66,12 @@ DBCollection.prototype.saveAndIndex = function (doc, elsDocFields) {
     }
     else {
       elsDoc = doc;
+      delete elsDoc['_id'];
     }
-    elsDoc._search_id = id.valueOf();
+    elsDoc._mongo_id = id.valueOf();
     
     var outputFile = '/tmp/mongosearch-' + new ObjectId().toString();
-    var progResult = runProgram('curl', this.getElsEndpoint() + '/' + doc._id, '-s', '-XPUT',
+    var progResult = runProgram('curl', this.getElsEndpoint() + '/' + elsDoc._mongo_id, '-s', '-XPUT',
       '-o', outputFile, '-d', JSON.stringify(elsDoc));
     
     var elsResult = {};
@@ -110,7 +111,7 @@ DBCollection.prototype.search = function (query) {
     result = [];
     
     searchResult.hits.hits.forEach((hit, i) => {
-      var doc = this.get(hit._source._search_id);
+      var doc = this.get(hit._source._mongo_id);
       if (doc) {
         result.push(doc);
       }
@@ -122,7 +123,7 @@ DBCollection.prototype.search = function (query) {
     result.progStatus = progResult;
   }
   
-  //removeFile(outputFile);
+  removeFile(outputFile);
   
   return result;
 }
