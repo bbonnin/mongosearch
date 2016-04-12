@@ -4,14 +4,23 @@ MongoDB shell extension to send elasticsearch queries and use the result to get 
 ## Purpose
 The goal of this extension is to provide an easy way (i.e. using one command) to :
 * insert documents in MongoDB and to index these documents (only the fields you will use for your search queries) in Elasticsearch
+
+![save and index](/docs/insert.png)
+
 * search in Elasticsearch and return the associated document stored in MongoDB
 
+![search](/docs/search.png)
+
+
 Important:
-* The same id must be used in MongoDB and Elastisearch
-* By default:
+* The script uses `curl` for requesting Elasticsearch: this tool must be in your path or you can change the calls to `runProgram` 
+* The same id will be used in MongoDB and Elastisearch
+  * it will be stored in a field named `_search_id` in Elasticsearch
+* By default (Elasticsearch / MongoDB):
   * index name = database name
   * document type name = collection name
   * elasticsearch host = mongod host
+  * _id = stringified _id
 
 ## How to use
 * Download `mongosearch.js`
@@ -37,15 +46,51 @@ Now, you have new methods for a collection:
 * Add new documents (only 2 fields are indexed in ELS):
 ```
 > db.actors.insertAndIndex({first_name: 'Will', last_name: 'Smith', movies: [...]}, ['first_name', 'last_name'])
+
+{
+  "mongo": {
+    "nMatched": 0,
+    "nUpserted": 1,
+    "nModified": 0,
+    "_id": 1
+  },
+  "elastic": {
+    "error": false,
+    "progStatus": 0,
+    "output": {
+      "_index": "cinema",
+      "_type": "actors",
+      "_id": "1",
+      "_version": 1,
+      "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+      },
+      "created": true
+    }
+  }
+}
+
 ```
 
 * use the `search` method
 ```
 > db.actors.search({"query": {
     "multi_match" : {
-        "query": "Will Smith",
-        "fields": [ "*_name" ] 
+        "query": "will smith",
+        "fields": [ "first_name" ] 
      }
 }})
 
+[
+  {
+    "_id": 1,
+    "first_name": "Will",
+    "last_name": "Smith",
+    "movies": [
+      "Independance Day"
+    ]
+  }
+]
 ```
